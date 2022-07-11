@@ -3,11 +3,6 @@ clear all
 set more off 
 capture log close
 
-cd "C:\Users\Cameron\OneDrive\Email attachments\Desktop\6614stata_471A424C959CCFC9AE423A866B5794B9_V1\UKDA-6614-stata\stata\stata11_se"
-
-
-global ukhls "C:\Users\Cameron\OneDrive\Email attachments\Desktop\6614stata_471A424C959CCFC9AE423A866B5794B9_V1\UKDA-6614-stata\stata\stata11_se"
-
 
 use pidp b_birthy b_jbsemp b_tujbpl b_tuin1 b_jbsat b_dvage b_sex b_marstat_dv b_hiqual_dv b_jbsemp b_gor_dv b_psu b_strata using "$ukhls/ukhls_w2/b_indresp", clear
 
