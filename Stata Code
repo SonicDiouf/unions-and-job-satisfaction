@@ -1,0 +1,853 @@
+version 12
+clear all
+set more off 
+capture log close
+
+cd "C:\Users\Cameron\OneDrive\Email attachments\Desktop\6614stata_471A424C959CCFC9AE423A866B5794B9_V1\UKDA-6614-stata\stata\stata11_se"
+
+
+global ukhls "C:\Users\Cameron\OneDrive\Email attachments\Desktop\6614stata_471A424C959CCFC9AE423A866B5794B9_V1\UKDA-6614-stata\stata\stata11_se"
+
+
+use pidp b_birthy b_jbsemp b_tujbpl b_tuin1 b_jbsat b_dvage b_sex b_marstat_dv b_hiqual_dv b_jbsemp b_gor_dv b_psu b_strata using "$ukhls/ukhls_w2/b_indresp", clear
+
+
+
+********************************************************************************
+* EXAMPLE 3: MATCHING DATA FROM RESPONDENTS AT 2 OR MORE WAVES (LONG FORMAT)
+********************************************************************************
+
+* 3.1 COMBINING WAVE 1 AND WAVE 2 DATA INTO LONG FORMAT
+*******************************************************
+
+// For appending the wave 1 and wave 2 data files into long format we need to 
+// (i) create a variable to identify which wave the data belongs to: 
+// 1 for wave 1, 2 for wave 2,...
+// (ii) drop the wave prefix from all variables so that Stata can recognize 
+// the variables from two waves as the same variable.
+
+// Let us start with Wave 2
+
+gen wave = 2010
+rename b_* *
+
+// These following three steps are not necessary, but useful.
+// See what the data looks like
+// Sort the data by pidp and wave 
+// Compress the data to save space
+describe
+sort pidp wave
+compress
+
+// save the data
+save bjunk, replace
+
+
+
+
+
+use pidp d_birthy d_jbsemp d_tujbpl d_tuin1  d_jbsat d_dvage d_sex d_marstat_dv d_hiqual_dv d_jbsemp d_gor_dv d_psu d_strata d_jbsamr d_cjob  using "$ukhls/ukhls_w4/d_indresp", clear
+
+gen wave = 2012
+rename d_* *
+describe
+sort pidp wave
+
+
+
+// To combine these two files into long format we use the command "append"
+append using bjunk
+
+describe
+compress
+save ab_long, replace
+
+
+
+
+use pidp f_birthy f_jbsemp f_tujbpl f_tuin1 f_jbsat f_dvage f_sex f_marstat_dv f_hiqual_dv f_jbsemp f_gor_dv f_indin91_lw f_psu f_strata f_jbsamr f_cjob using "$ukhls/ukhls_w6/f_indresp", clear
+ 
+gen wave = 2014
+rename f_* *
+describe
+sort pidp wave
+
+
+
+// To combine these two files into long format we use the command "append"
+append using ab_long
+
+describe
+compress
+save ab_long, replace
+
+
+
+
+use pidp h_birthy h_jbsemp h_tujbpl h_tuin1 h_jbsat h_dvage h_sex h_marstat_dv h_hiqual_dv h_jbsemp h_gor_dv h_indin91_lw h_psu h_strata h_nxtendreas2 h_jbsamr h_cjob using "$ukhls/ukhls_w8/h_indresp", clear
+ 
+gen wave = 2016
+rename h_* *
+describe
+sort pidp wave
+
+
+
+// To combine these two files into long format we use the command "append"
+append using ab_long
+
+describe
+compress
+save ab_long, replace
+
+
+
+
+
+use pidp j_birthy j_jbsemp j_tujbpl j_tuin1 j_jbsat j_dvage j_sex j_marstat_dv j_hiqual_dv j_jbsemp j_gor_dv j_indin91_lw j_psu j_strata j_nxtendreas2 j_jbsamr j_cjob using "$ukhls/ukhls_w10/j_indresp", clear 
+gen wave = 2018
+rename j_* *
+describe
+sort pidp wave
+
+
+
+// To combine these two files into long format we use the command "append"
+append using ab_long
+
+describe
+compress
+save ab_long, replace
+
+
+/*****************************************************************************************
+* MERGING INDIVIDUAL FILES FROM HARMONISED BHPS AND UKHLS IN LONG FORMAT                 *
+* To match individual level files from the harmonised BHPS and Understanding Society     *
+* in long format, you need to remove the wave prefixes in the two sets of files and      *
+* generate a wave identifier that works across both sets of files. The pidp will         *
+* work as the unique cross-wave identifier across both sets of files. This code only     *
+* keeps individuals who took part in BHPS and drops those who joined as part of          *
+* Understanding Society.                                                                 *
+*****************************************************************************************/
+//now do bhps....
+
+
+
+
+
+
+use pidp be_birthy be_tujbpl be_tuin1 be_jbsat_bh be_age_dv be_sex be_mastat be_hiqual_dv be_jbsemp be_gor_dv using "$ukhls/bhps_w5/be_indresp", clear
+ 
+gen wave = 1995
+rename be_* *
+describe
+sort pidp wave
+
+
+
+// To combine these two files into long format we use the command "append"
+append using ab_long
+
+describe
+compress
+save ab_long, replace
+
+use pidp bf_birthy bf_tujbpl bf_tuin1 bf_jbsat_bh bf_age_dv bf_sex bf_mastat bf_hiqual_dv bf_jbsemp bf_gor_dv bf_lfsat5 using "$ukhls/bhps_w6/bf_indresp", clear
+ 
+gen wave = 1996
+rename bf_* *
+describe
+sort pidp wave
+
+
+
+// To combine these two files into long format we use the command "append"
+append using ab_long
+
+describe
+compress
+save ab_long, replace
+
+
+
+use pidp bg_birthy bg_tujbpl bg_tuin1 bg_jbsat_bh bg_age_dv bg_sex bg_mastat bg_hiqual_dv bg_jbsemp bg_gor_dv bg_lfsat5 using "$ukhls/bhps_w7/bg_indresp", clear
+ 
+gen wave = 1997
+rename bg_* *
+describe
+sort pidp wave
+
+
+
+// To combine these two files into long format we use the command "append"
+append using ab_long
+
+describe
+compress
+save ab_long, replace
+
+
+use pidp  bh_birthy bh_tujbpl bh_tuin1 bh_jbsat_bh bh_age_dv bh_sex bh_mastat bh_hiqual_dv bh_jbsemp bh_gor_dv bh_lfsat5 using "$ukhls/bhps_w8/bh_indresp", clear
+ 
+gen wave = 1998
+rename bh_* *
+describe
+sort pidp wave
+
+
+
+// To combine these two files into long format we use the command "append"
+append using ab_long
+
+describe
+compress
+save ab_long, replace
+
+
+
+use pidp  bi_tujbpl bi_tuin1 bi_jbsat_bh bi_age_dv bi_sex bi_mastat bi_hiqual_dv bi_jbsemp bi_gor_dv bi_lfsat5 using "$ukhls/bhps_w9/bi_indresp", clear
+ 
+gen wave = 1999
+rename bi_* *
+describe
+sort pidp wave
+
+
+
+// To combine these two files into long format we use the command "append"
+append using ab_long
+
+describe
+compress
+save ab_long, replace
+
+
+
+use pidp bj_birthy bj_tujbpl bj_tuin1 bj_jbsat_bh bj_age_dv bj_sex bj_mastat bj_hiqual_dv bj_jbsemp bj_gor_dv bj_lfsat5  using "$ukhls/bhps_w10/bj_indresp", clear
+ 
+gen wave = 2000
+rename bj_* *
+describe
+sort pidp wave
+
+
+
+// To combine these two files into long format we use the command "append"
+append using ab_long
+
+describe
+compress
+save ab_long, replace
+
+
+
+
+
+use pidp bk_birthy bk_tujbpl bk_tuin1 bk_jbsat_bh bk_age_dv bk_sex bk_mastat bk_hiqual_dv bk_jbsemp bk_gor_dv using "$ukhls/bhps_w11/bk_indresp", clear
+ 
+gen wave = 2001
+rename bk_* *
+describe
+sort pidp wave
+
+// To combine these two files into long format we use the command "append"
+append using ab_long
+
+describe
+compress
+save ab_long, replace
+
+
+use pidp bl_birthy bl_tujbpl bl_tuin1 bl_jbsat_bh bl_age_dv bl_sex bl_mastat bl_hiqual_dv bl_jbsemp bl_gor_dv bl_lfsat5 using "$ukhls/bhps_w12/bl_indresp", clear
+ 
+gen wave = 2002
+rename bl_* *
+describe
+sort pidp wave
+
+
+
+// To combine these two files into long format we use the command "append"
+append using ab_long
+
+describe
+compress
+save ab_long, replace
+
+
+use pidp bm_birthy bm_tujbpl bm_tuin1 bm_jbsat_bh bm_age_dv bm_sex bm_mastat bm_hiqual_dv bm_jbsemp bm_gor_dv bm_lfsat5 using "$ukhls/bhps_w13/bm_indresp", clear
+ 
+gen wave = 2003
+rename bm_* *
+describe
+sort pidp wave
+
+
+
+// To combine these two files into long format we use the command "append"
+append using ab_long
+
+describe
+compress
+save ab_long, replace
+
+
+use pidp bn_birthy bn_tujbpl bn_tuin1 bn_jbsat_bh bn_age_dv bn_sex bn_mastat bn_hiqual_dv bn_jbsemp bn_gor_dv bn_lfsat5 using "$ukhls/bhps_w14/bn_indresp", clear
+ 
+gen wave = 2004
+rename bn_* *
+describe
+sort pidp wave
+
+
+
+// To combine these two files into long format we use the command "append"
+append using ab_long
+
+describe
+compress
+save ab_long, replace
+
+
+
+use pidp bo_birthy bo_tujbpl bo_tuin1 bo_jbsat_bh bo_age_dv bo_sex bo_mastat bo_hiqual_dv bo_jbsemp bo_gor_dv bo_lfsat5 using "$ukhls/bhps_w15/bo_indresp", clear
+ 
+gen wave = 2005
+rename bo_* *
+describe
+sort pidp wave
+
+
+
+// To combine these two files into long format we use the command "append"
+append using ab_long
+
+describe
+compress
+save ab_long, replace
+
+use pidp bp_birthy bp_tujbpl bp_tuin1 bp_jbsat_bh bp_age_dv bp_sex bp_mastat bp_hiqual_dv bp_jbsemp bp_gor_dv bp_jbempr bp_lfsat5 bp_jhstpy using "$ukhls/bhps_w16/bp_indresp", clear
+ 
+gen wave = 2006
+rename bp_* *
+describe
+sort pidp wave
+
+
+
+// To combine these two files into long format we use the command "append"
+append using ab_long
+
+describe
+compress
+save ab_long, replace
+
+
+
+use pidp bq_birthy bq_tujbpl bq_tuin1 bq_jbsat_bh bq_age_dv bq_sex bq_mastat bq_hiqual_dv bq_jbsemp bq_gor_dv bq_jbempr bq_lfsat5 bq_jhstpy using "$ukhls/bhps_w17/bq_indresp", clear
+ 
+gen wave = 2007
+rename bq_* *
+describe
+sort pidp wave
+
+
+
+// To combine these two files into long format we use the command "append"
+append using ab_long
+
+describe
+compress
+save ab_long, replace
+
+
+use pidp br_birthy br_tujbpl br_tuin1 br_tuin1 br_jbsat_bh br_age_dv br_sex br_mastat br_hiqual_dv br_jbsemp br_gor_dv br_jbempr br_lfsat5 br_jhstpy using "$ukhls/bhps_w18/br_indresp", clear
+ 
+gen wave = 2008
+rename br_* *
+describe
+sort pidp wave
+
+
+
+// To combine these two files into long format we use the command "append"
+append using ab_long
+
+describe
+compress
+save ab_long, replace
+
+
+use pidp be_tuin1 be_tujbpl using "$ukhls/bhps_w5/be_indresp", clear
+ 
+gen wave = 1995
+rename be_* *
+describe
+sort pidp wave
+
+
+// To combine these two files into long format we use the command "append"
+append using ab_long
+
+describe
+compress
+save ab_long, replace
+
+use pidp bd_tuin1 bd_tujbpl using "$ukhls/bhps_w4/bd_indresp", clear
+
+gen wave = 1994
+rename bd_* *
+describe
+sort pidp wave
+
+
+// To combine these two files into long format we use the command "append"
+append using ab_long
+
+describe
+compress
+save ab_long, replace
+
+use pidp bc_tuin1 bc_tujbpl using "$ukhls/bhps_w3/bc_indresp", clear
+
+
+// To combine these two files into long format we use the command "append"
+append using ab_long
+
+describe
+compress
+save ab_long, replace
+
+use pidp bb_tuin1 bb_tujbpl using "$ukhls/bhps_w2/bb_indresp", clear
+
+
+gen wave = 1993
+rename bb_* *
+describe
+sort pidp wave
+
+// To combine these two files into long format we use the command "append"
+append using ab_long
+
+describe
+compress
+save ab_long, replace
+
+
+
+use pidp ba_tuin1 ba_tujbpl using "$ukhls/bhps_w1/ba_indresp", clear
+
+
+gen wave = 1992
+rename ba_* *
+describe
+sort pidp wave
+
+// To combine these two files into long format we use the command "append"
+append using ab_long
+
+describe
+compress
+save ab_long, replace
+
+
+duplicates drop pidp wave, force
+
+* 3.2 PRODUCING A BALANCED PANEL AND USING XT COMMANDS TO LOOK AT TRANSITIONS
+*****************************************************************************
+
+
+// As we are interested in transitions across the two waves, and so we will 
+// make use of Stata's XT commands which are specifically designed to study 
+// transitions. These commands allow us to use specific commands for 
+// time-series and panel data and treat in gaps panel & missing cases correctly. 
+// We first need to xtset the data, i.e., tell Stata this has a panel structure.
+xtset pidp wave
+
+// pidp is the cross-wave identifier, wave identifies time
+
+// We can now describe (xtdes) and summarise (xtsum) the panel data.  
+xtdes
+xtsum
+
+gen union = .
+replace union = 0 if tujbpl == 2
+replace union = 0 if tuin1 == 2
+replace union = 1 if tuin1 == 1
+replace union = 2 if tujbpl == 1 & tuin1 == 2
+
+
+gen union1 = .
+replace union1 = 0 if union == 0
+replace union1 = 1 if union == 1
+
+gen union2 = . 
+replace union2 = 0 if tujbpl == 2
+replace union2 = 1 if tujbpl == 1
+
+
+recode union1 1 = 2 if wave >2008
+bysort pidp (wave) : gen union_exp = sum(union1)
+
+
+drop if jbsemp < 1
+drop if jbsemp == 2
+recode lfsat5 0 = .
+
+recode lfsat5 (1=1)(2 3 =2)(4=3)(5 6=4)(7=5)(-9 -2 -1=-1)(0 -8 -7=-3), gen(temp_a)
+recode jbsat (1=1)(2 3 =2)(4=3)(5 6=4)(7=5)(-10 -9 -2 -1=-1)(-8 -7=-3), gen(temp_b)
+recode lfsat5 (1=0)(2=1.67)(3=3.33)(4=5)(5=6.67)(6=8.33)(7=10) ///
+				(-9 -2 -1=-1)(-8 -7=-3), gen(temp_a10)
+recode jbsat (1=0)(2=1.67)(3=3.33)(4=5)(5=6.67)(6=8.33)(7=10) ///
+				(-10 -9 -2 -1=-1)(-8 -7=-3), gen(temp_b10)
+	gen satwork5=temp_a 
+	replace satwork5=temp_b if wave>=2009
+	gen satwork10=temp_a10 
+	replace satwork10=temp_b10 if wave>=2009
+	drop temp_*
+
+
+describe
+summ
+// recode values from -1 to -9 to Stata system missing for all variables (need to make exception for weighting variables...)
+mvdecode _all, mv(-100/-1) 
+//sex
+
+
+
+//works first try...
+//sex isn't going to change (in theory lol) so this is fine
+
+
+gen married = .
+replace married = 1 if mastat == 1 
+replace married = 0 if mastat == 2
+replace married = 0 if mastat == 3
+replace married = 0 if mastat == 4
+replace married = 0 if mastat == 5
+replace married = 0 if mastat == 6
+replace married = 0 if mastat == 7
+replace married = 0 if mastat == 8
+replace married = 0 if mastat == 9
+
+replace married = 1 if marstat_dv == 1 
+replace married = 0 if marstat_dv == 2 
+replace married = 0 if marstat_dv == 3 
+replace married = 0 if marstat_dv == 4 
+replace married = 0 if marstat_dv == 5 
+replace married = 0 if marstat_dv == 6 
+replace married = 0 if marstat_dv == 7 
+replace married = 0 if marstat_dv == 8 
+replace married = 0 if marstat_dv == 9 
+
+
+
+
+gen degree = .
+replace degree = 1 if hiqual_dv == 1
+replace degree = 0 if hiqual_dv == 2
+replace degree = 0 if hiqual_dv == 3
+replace degree = 0 if hiqual_dv == 4
+replace degree = 0 if hiqual_dv == 5
+replace degree = 0 if hiqual_dv == 9
+
+
+gen alevel = .
+replace alevel = 1 if hiqual_dv == 3
+replace alevel = 0 if hiqual_dv == 2
+replace alevel = 0 if hiqual_dv == 1
+replace alevel = 0 if hiqual_dv == 4
+replace alevel = 0 if hiqual_dv == 5
+replace alevel = 0 if hiqual_dv == 9
+
+
+
+
+
+//need to fill in missing values for age before generating age squared!
+
+egen age1 = rowtotal(age_dv dvage)
+drop if age1>65
+drop if age1<18
+gen age2 = age1^2 //age2 needs to be after otherwise missing values will be coded as real...
+summ
+gen sex1 = sex
+replace sex1 = sex1[_n-1] if missing(sex1) & pidp == pidp[_n-1]  & (wave - wave[_n-1]) 
+
+
+
+
+
+egen job1 = concat(jbsamr jbempr)
+gen jobchange = real(job1)
+recode jobchange .1 = 1
+recode jobchange .2 = 2 
+recode jobchange -100/0 = .
+egen ujob = concat(union jobchange)
+gen unionjob = real(ujob)
+recode unionjob 0 = .
+recode unionjob 11 = 0
+recode unionjob 12 = .
+recode unionjob 1 = .
+recode unionjob 2 = 1
+recode unionjob .1 = .
+recode unionjob .2 = .
+
+
+
+regress satwork10 i.union i.wave, robust
+outreg2 using results, tex dec(3) keep(i.union age1 age2 married degree alevel) replace
+regress satwork10 i.union age1 age2 sex married degree alevel i.gor_dv i.wave, robust 
+margins i.wave##i.union
+marginsplot
+
+regress satwork10 i.union age1 age2 sex married degree alevel i.gor_dv i.wave if wave<2008,robust 
+regress satwork10 i.union age1 age2 sex married degree alevel i.gor_dv i.wave if wave>2008, robust 
+xtreg satwork10 i.union age1 age2 sex married degree alevel i.gor_dv i.wave if wave>1995 & wave<2008, robust fe
+xtreg satwork10 i.union age1 age2 sex married degree alevel i.gor_dv i.wave if wave, robust fe
+margins i.wave##i.union
+marginsplot
+//cannot find any evidence that the association is changing over time!
+
+outreg2 using results, tex keep(i.union age1 age2 sex married degree alevel) append dec(3)
+regress satwork10 i.union i.gor_dv i.wave, robust 
+
+xtreg satwork10 i.union i.wave
+outreg2 using results, tex keep(i.union age1 age2 sex married degree alevel) dec(3) append 
+
+xtreg satwork10 i.union age1 age2 married degree alevel i.wave i.gor_dv, fe vce(cluster pidp)
+margins i.wave##i.union
+marginsplot
+xtreg satwork10 i.union age1 age2 married degree alevel i.wave i.gor_dv, fe vce(cluster pidp)
+outreg2 using results, tex dec(3) keep(i.union age1 age2 married degree alevel) addtext(Region Dummies, Year Dummies) append 
+
+
+xtreg satwork10 i.union age1 age2 married degree alevel i.wave i.gor_dv, fe vce(cluster pidp)
+xtreg satwork10 i.union age1 age2 married degree alevel i.wave i.gor_dv, fe vce(cluster pidp)
+//including married increases negative effect.
+//excluding age increases negative effect
+// exckuding education increases negative effect
+//excluding region increases negative effect
+//no idea what the combination is lol
+
+///////////////////////////////////////////////////////
+
+sort pidp wave
+
+
+
+gen unionchange = .
+
+replace unionchange = 0 if union[_n-1] == 0  & pidp == pidp[_n-1]  & (wave - wave[_n-1]) <= 2
+
+replace unionchange = 1 if union[_n-1] == 1  & pidp == pidp[_n-1]  & (wave - wave[_n-1]) <= 2
+replace unionchange = 2 if union[_n-1] == 2  & pidp == pidp[_n-1]  & (wave - wave[_n-1]) <=2
+
+
+
+gen unionchange2 = .
+
+replace unionchange2 = 0 if union == 0 & union[_n-1] == 0  & pidp == pidp[_n-1]  & (wave - wave[_n-1]) <= 2
+
+replace unionchange2 = 11 if union == 1 & union[_n-1] == 1  & pidp == pidp[_n-1]  & (wave - wave[_n-1]) <= 2
+replace unionchange2 = 10 if union == 0 & union[_n-1] == 1  & pidp == pidp[_n-1]  & (wave - wave[_n-1]) <= 2
+replace unionchange2 = 1 if union == 1 & union[_n-1] == 0  & pidp == pidp[_n-1] & (wave - wave[_n-1]) <= 2
+
+
+table unionchange2
+
+table unionchange2 jobchange, c(mean satwork10)
+
+gen satwork10last = satwork10[_n-1] if pidp == pidp[_n-1]  & (wave - wave[_n-1]) <= 2
+
+
+
+gen satchange = .
+
+replace satchange = 0 if satwork10[_n-1] == 0  & pidp == pidp[_n-1]  & (wave - wave[_n-1]) <= 2
+
+replace satchange = 1 if satwork10 == 0 & pidp == pidp & wave == wave
+
+
+
+table unionchange2 jobchange, c(mean satwork10last)
+
+
+gen satchange10 = satwork10 - satwork10last
+
+
+table unionchange2 jobchange, c(count satchange10)
+table unionchange2 jobchange, c(mean satchange10)
+
+
+
+
+
+
+
+
+
+
+
+gen unionexp = .
+
+bysort pidp (wave) : gen union_exp10 = sum(union1)
+
+
+recode union_exp10 1/3 = 1
+recode union_exp10 4/6 = 2
+recode union_exp10 7/25 = 3
+
+
+
+table jobchange union_exp, c(mean satchange10)
+egen age =cut(age1), at (10,20,30,40,50,60,70)
+
+xtreg satwork10 i.union##i.unionchange i.union##i.jobchange i.unionchange##i.jobchange i.age married degree alevel i.wave i.gor_dv, fe vce(cluster pidp)
+margins, dydx(i.union) at(unionchange=(0(1)2) jobchange=(1 2))
+marginsplot
+//switching into a union is good. staying in a union is bad.
+
+
+xtreg satwork10 i.union##i.unionchange i.union##i.jobchange##i.unionchange i.unionchange##i.jobchange age1 age2 married degree alevel i.wave i.gor_dv, fe vce(cluster pidp)
+
+
+margins i.union##i.unionchange##i.jobchange
+
+
+margins, dydx()
+
+margins, dydx (i.union) at (unionchange=(0(1)2))
+
+outreg2 using results, tex keep(i.union i.unionchange i.union##i.unionchange) dec(3) replace 
+margins, dydx (i.union) at (jobchange=(1(1)2))
+outreg2 using results, tex keep(i.union##i.jobchange) dec(3) replace 
+margins, dydx (i.unionchange) at (jobchange=(1(1)2))
+margins i.unionchange##i.jobchange
+
+outreg2 using results, tex keep(i.unionchange##i.jobchange) dec(3) replace 
+
+
+
+//when you take into account people switching jobs alongside union status, union experience to be if anything benefical! So why do we observe that union members have decreased job satisfaction? Because they do not, or possibly cannot, quit as much. If union members change jobs, then there is no effect of union membership. The reason we might be observing a declining effect over time is because union members quit more now. Indeed, a cursory glance at annual labour statistics in the UK proves this to be the case.
+
+//To return to the claim that unions now increase job satisfaction, it is possible that unions reduce quits more than they used to. Indeed, this is claimed as such in a recent paper by Artz, Bryson and Blanchflower (2021). We do note that union members report lower job satisfaction over time.
+
+//switching into unions is good. staying in them is bad. dissatisfied union members do appear to take their dissatisfaction with them to other union jobs.
+
+clonevar union_exp3 = union_exp
+
+recode union_exp3 1/2 = 1
+recode union_exp3 3/4 = 2
+recode union_exp3 5/6 = 3
+recode union_exp3 7/8 = 4
+recode union_exp3 9/10 = 5
+recode union_exp3 11/12 = 6
+recode union_exp3 13/14 = 7
+recode union_exp3 15/16 = 8
+recode union_exp3 17/30 = 9
+
+clonevar union_exp11 = union_exp
+
+recode union_exp11 1/3 = 1
+recode union_exp11 4/6 = 2
+recode union_exp11 7/9 = 3
+recode union_exp11 10/12 = 4
+recode union_exp11 13/30 = 5
+
+clonevar union_exp6 = union_exp
+
+recode union_exp6 1/5 = 1
+recode union_exp6 6/10 = 2
+recode union_exp6 11/22 = 3
+
+
+regress satwork10 i.union_exp11 age1 age2 married degree alevel i.wave i.gor_dv, robust
+
+xtreg satwork10 i.union_exp11 age1 age2 married degree alevel i.wave i.gor_dv, fe vce(cluster pidp)
+
+regress satwork10 i.jobchange##i.union_exp11 age1 age2 married degree alevel i.wave i.gor_dv, robust
+
+xtreg satwork10 i.jobchange##i.union_exp11 age1 age2 married degree alevel i.wave i.gor_dv, fe vce(cluster pidp)
+
+
+margins i.union_exp11#jobchange
+marginsplot 
+outreg2 using results, tex keep(i.union_exp1##i.jobchange) dec(3) replace 
+
+
+//In other words, when you take into account dissatisfaction associated with staying with the same employer, unions have no effect, and switching into union status may even be associated with positive benefits. 
+
+//for union workers, when taking job change into account, union experience has no effect. Moreover, union workers do not appear even amongst union member exclusive sample. eg. union workers who switch into union jobs at another company. 
+
+
+// even when switching out of union status, union members do not appear to report significant change in satisfaction levels.
+//effect of job change is significant even for people with long union experience
+//People do not appear to take their job dissatisfaction with them according to this regression.
+
+
+//so... unobserved job heterogeniety matters loads, it may even be the central issue in the field according to the evidence of this dissertation.
+
+
+
+keep union union1 union2 age1 age2 sex married degree alevel jobchange satwork10 gor_dv wave pidp union_exp
+
+
+univar age1 age2 sex married degree alevel jobchange satwork10, by (union)
+outreg2 using results, tex keep(i.union age1 age2 sex married degree alevel) replace dec(3)
+
+
+
+bysort union5: outreg2 using x.tex, replace sum(log)
+
+outreg2 using x.tex, replace sum(log)
+
+
+gen union5 = union
+recode union5 0 = .
+recode union5 1 = .
+
+
+gen union6 = union
+recode union5 1 = .
+recode union5 2 = .
+
+
+gen union7 = union
+recode union5 0 = .
+recode union5 2 = .
+
+
+//pooled regressions replicating Bryson and Blanchflower
+
+
+xtreg satwork10 i.union age1 age2 sex married degree alevel i.gor_dv i.wave if wave>1995 & wave<2009, vce(cluster pidp) fe
+outreg2 using results, tex keep(i.union union2 age1 age2  married degree alevel) replace dec(3)
+
+xtreg satwork10 i.union age1 age2 married degree alevel i.gor_dv i.wave if wave>2009, vce(cluster pidp) fe
+outreg2 using results, tex keep(i.union union2 age1 age2  married degree alevel) append dec(3)
+
+
+
+
+//original regressions replicating Bryson and Blanchflower
+//model 1
+regress satwork10 i.union i.wave, robust
+outreg2 using results, tex keep(i.union age1 age2 sex married degree alevel) replace dec(3)
+//model 2
+regress satwork10 i.union age1 age2 sex married degree alevel i.gor_dv i.wave, robust
+outreg2 using results, tex keep(i.union age1 age2 sex married degree alevel) append dec(3)
+//model 3
+xtreg satwork10 i.union i.wave, vce(cluster pidp) fe
+outreg2 using results, tex keep(i.union age1 age2 sex married degree alevel) append dec(3)
+
+xtreg satwork10 i.union age1 age2  married degree alevel i.gor_dv i.wave, vce(cluster pidp) fe
+outreg2 using results, tex keep(i.union age1 age2 sex married degree alevel) append dec(3)
+xtreg satwork10 union2 age1 age2  married degree alevel i.gor_dv i.wave, vce(cluster pidp) fe
+outreg2 using results, tex keep(union2 age1 age2 sex married degree alevel) append dec(3)
+
+
+//
+
+
+
